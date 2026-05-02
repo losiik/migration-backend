@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import utmn.migration.dto.RegisterRequest;
 import utmn.migration.entity.User;
+import utmn.migration.entity.UserRole;
 import utmn.migration.repository.UserRepository;
 
 @Service
@@ -27,18 +28,24 @@ public class UserService implements UserDetailsService {
         user.setEmail(request.email());
         user.setPassword(encoder.encode(request.password()));
         user.setName(request.fullName());
+        user.setRole(UserRole.USER);
         return repo.save(user);
+    }
+
+    public User findByEmail(String email) {
+        return repo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = repo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+        User user = findByEmail(email);
+        UserRole role = user.getRole() == null ? UserRole.USER : user.getRole();
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .authorities("USER")
+                .authorities(role.name())
                 .build();
     }
 }

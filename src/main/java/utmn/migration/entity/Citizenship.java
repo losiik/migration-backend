@@ -1,22 +1,50 @@
 package utmn.migration.entity;
 
-public enum Citizenship {
-    UKRAINE("Украина"),
-    BELARUS("Беларусь"),
-    KYRGYZSTAN("Киргизия"),
-    KAZAKHSTAN("Казахстан"),
-    ARMENIA("Армения"),
-    TAJIKISTAN("Таджикистан"),
-    UZBEKISTAN("Узбекистан"),
-    OTHER("Другое");
+import jakarta.persistence.*;
 
-    private final String displayName;
+@Entity
+@Table(name = "citizenships")
+public class Citizenship {
 
-    Citizenship(String displayName) {
-        this.displayName = displayName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String code;
+
+    @Column(nullable = false)
+    private String country;
+
+    public Citizenship() {
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public Citizenship(String code, String country) {
+        this.code = code;
+        this.country = country;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

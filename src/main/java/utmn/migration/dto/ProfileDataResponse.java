@@ -1,15 +1,17 @@
 package utmn.migration.dto;
 
-import utmn.migration.entity.Citizenship;
-
 import java.time.LocalDate;
 
-public record CitizenResponse(
+public record ProfileDataResponse(
         Long id,
-        Citizenship citizenship,
+        String citizenshipCode,
         String otherCitizenship,
         String qualification,
         Boolean wasRegistered,
         Boolean resettlementProgram,
-        LocalDate entryDate
-) {}
+        LocalDate entryDate,
+        String visitPurpose,
+        Boolean plansEmployment,
+        String patentNumber
+) {
+}

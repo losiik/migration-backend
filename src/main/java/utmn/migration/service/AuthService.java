@@ -3,25 +3,24 @@ package utmn.migration.service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import utmn.migration.dto.AuthRequest;
 import utmn.migration.dto.AuthResponse;
 import utmn.migration.entity.User;
-import utmn.migration.repository.UserRepository;
+import utmn.migration.entity.UserRole;
 
 @Service
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public AuthService(AuthenticationManager authenticationManager,
                        JwtService jwtService,
-                       UserRepository userRepository) {
+                       UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -32,11 +31,10 @@ public class AuthService {
                 )
         );
 
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+        User user = userService.findByEmail(request.email());
+        UserRole role = user.getRole() == null ? UserRole.USER : user.getRole();
         String token = jwtService.generateToken(user.getEmail());
 
-        return new AuthResponse(token, user.getEmail(), user.getName());
+        return new AuthResponse(token, user.getEmail(), user.getName(), role.name());
     }
 }

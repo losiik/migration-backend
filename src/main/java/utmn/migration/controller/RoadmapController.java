@@ -20,8 +20,8 @@ public class RoadmapController {
 
     @GetMapping
     public ResponseEntity<RoadmapResponse> getRoadmap(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        RoadmapResponse roadmap = roadmapService.generateRoadmap(userDetails.getUsername());
-        return ResponseEntity.ok(roadmap);
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok(roadmapService.getRoadmap(userDetails.getUsername()));
     }
 }

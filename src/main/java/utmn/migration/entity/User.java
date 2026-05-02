@@ -1,6 +1,14 @@
 package utmn.migration.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -19,12 +27,25 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public User() {}
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UserRole role = UserRole.USER;
 
-    public User(String name, String email, String password) {
+    public User() {
+    }
+
+    public User(String name, String email, String password, UserRole role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
+    }
+
+    @PrePersist
+    public void applyDefaults() {
+        if (role == null) {
+            role = UserRole.USER;
+        }
     }
 
     public Long getId() {
@@ -58,5 +79,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-}
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+}

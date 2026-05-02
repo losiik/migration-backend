@@ -1,22 +1,23 @@
 package utmn.migration.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "citizens")
-public class Citizen {
+@Table(name = "migrants")
+public class Migrant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "citizenship_id", nullable = false)
     private Citizenship citizenship;
 
     @Column(name = "other_citizenship")
@@ -25,29 +26,21 @@ public class Citizen {
     @Column(nullable = false)
     private String qualification;
 
+    @Column(name = "entry_date", nullable = false)
+    private LocalDate entryDate;
+
     @Column(name = "was_registered", nullable = false)
     private Boolean wasRegistered;
 
     @Column(name = "resettlement_program", nullable = false)
     private Boolean resettlementProgram;
 
-    @Column(name = "entry_date", nullable = false)
-    private LocalDate entryDate;
+    @Column(name = "visit_purpose", nullable = false)
+    private String visitPurpose;
 
-    // Конструкторы
-    public Citizen() {}
+    @Column(name = "plans_employment", nullable = false)
+    private Boolean plansEmployment;
 
-    public Citizen(User user, Citizenship citizenship, String qualification,
-                   Boolean wasRegistered, Boolean resettlementProgram, LocalDate entryDate) {
-        this.user = user;
-        this.citizenship = citizenship;
-        this.qualification = qualification;
-        this.wasRegistered = wasRegistered;
-        this.resettlementProgram = resettlementProgram;
-        this.entryDate = entryDate;
-    }
-
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -88,6 +81,14 @@ public class Citizen {
         this.qualification = qualification;
     }
 
+    public LocalDate getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(LocalDate entryDate) {
+        this.entryDate = entryDate;
+    }
+
     public Boolean getWasRegistered() {
         return wasRegistered;
     }
@@ -104,11 +105,19 @@ public class Citizen {
         this.resettlementProgram = resettlementProgram;
     }
 
-    public LocalDate getEntryDate() {
-        return entryDate;
+    public String getVisitPurpose() {
+        return visitPurpose;
     }
 
-    public void setEntryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
+    public void setVisitPurpose(String visitPurpose) {
+        this.visitPurpose = visitPurpose;
+    }
+
+    public Boolean getPlansEmployment() {
+        return plansEmployment;
+    }
+
+    public void setPlansEmployment(Boolean plansEmployment) {
+        this.plansEmployment = plansEmployment;
     }
 }
